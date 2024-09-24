@@ -10,7 +10,7 @@ def _process_director(ti):
 
 with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',catchup=False) as dag:
 
-	process_user = PythonOperator(task_id='process_user',python_callabale=_process_user)
-	process_director = PythonOperator(task_id='process_director',python_callabale=_process_director)
+	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
+	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
 	
 	process_user >> process_director

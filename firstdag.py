@@ -21,7 +21,7 @@ list_dates = ['2024-04-13', '2024-05-13']
 with DAG('first_dag_10',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	@task.python
-	def process_dates(params: dict) -> list[string]:
+	def process_dates(params: dict) -> list[str]:
 		startDate = date_object = datetime.strptime(params["startDate"], "%Y-%m-%d").date()
 		endDate = date_object = datetime.strptime(params["endDate"], "%Y-%m-%d").date()
 		dates = []

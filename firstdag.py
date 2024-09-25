@@ -7,6 +7,9 @@ from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperato
 from airflow.hooks.base import BaseHook
 from airflow.models.param import Param
 from taskgroup import parent_group
+from airflow.decorators import dag, task, task_group
+from airflow.models.taskinstance import TaskInstance
+from airflow.models.dagrun import DagRun
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
@@ -15,11 +18,21 @@ envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 
 list_dates = ['2024-04-13', '2024-05-13']
 
-def _process_first(ti):
-	print("Printing Process First")	
+def _process_dates(**kwargs):
+	dr: DagRun = kwargs["dag_run"]
+	params = dr.conf["params"]
+	startDate = date_object = datetime.strptime(params["startDate"], "%Y-%m-%d").date()
+	endDate = date_object = datetime.strptime(params["endDate"], "%Y-%m-%d").date()
+	dates = []
+	delta = timedelta(days=1)
+	while startDate <= endDate:
+	    dates.append(startDate.strftime('%Y-%m-%d'))
+	    start_dt += delta
+	    
+    	return dates
 
-with DAG('first_dag_6',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
+with DAG('first_dag_8',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
-	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
+	process_dates = PythonOperator(task_id='process_first',python_callable=_process_dates,provide_context=True)
 	
-	process_first >> parent_group(list_dates)
+	process_dates >> parent_group(process_dates.output)

@@ -7,6 +7,7 @@ from airflow.hooks.base import BaseHook
 from airflow.models.param import Param
 from airflow.utils.task_group import TaskGroup
 from airflow.decorators import dag, task, task_group
+from airflow.models import XComArg
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
@@ -18,8 +19,11 @@ def _process_director(ti):
 	print("Printing Process Director")
 	
 @task_group()
-def parent_group(report_dates: list[str]) -> list[TaskGroup]:
-    return list(map(etl_tasks, report_dates))
+def parent_group(report_dates: XComArg) -> list[TaskGroup]:
+    dates = []
+    for value in report_dates:
+            dates.append(value)
+    return list(map(etl_tasks, dates))
 		
 	
 def etl_tasks(report_date: str) -> list[TaskGroup]:

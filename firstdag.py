@@ -18,7 +18,7 @@ list_dates = ['2024-04-13', '2024-05-13']
 def _process_first(ti):
 	print("Printing Process First")	
 
-with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
+with DAG('first_dag_6',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
 	

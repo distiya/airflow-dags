@@ -17,35 +17,25 @@ def _process_user(ti):
 	
 def _process_director(ti):
 	print("Printing Process Director")
-	
-@task_group()
-def parent_group(report_dates) -> list[TaskGroup]:
-    dates = []
-    for value in report_dates['dates']:
-            dates.append(value)
-    return list(map(etl_tasks, dates))
 		
-	
-def etl_tasks(report_date: str) -> list[TaskGroup]:
+
+@task_group()	
+def etl_tasks(report_date: str):
 
 	envVars = {'TEST_USER':report_date,'TEST_PASSWORD':test_connection.password}
 
-	with TaskGroup(f"trading_performance_etl_{report_date}", tooltip=f"Trading Performance ETL {report_date}") as group:
+	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
+	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
 	
-		process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
-		process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
-		
-		k8s_job = KubernetesPodOperator(
-		    task_id="job-task",
-		    namespace="airflow",
-		    image="distiya/etl-olap:envtest1",
-		    name="jobtask",
-		    env_vars = envVars,
-		    get_logs=True
-		)
-		
-		process_user >> process_director >> k8s_job	
-		
-		return group
+	k8s_job = KubernetesPodOperator(
+	    task_id="job-task",
+	    namespace="airflow",
+	    image="distiya/etl-olap:envtest1",
+	    name="jobtask",
+	    env_vars = envVars,
+	    get_logs=True
+	)
+	
+	process_user >> process_director >> k8s_job
 
 	

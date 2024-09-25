@@ -6,7 +6,7 @@ from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperato
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.hooks.base import BaseHook
 from airflow.models.param import Param
-from taskgroup import parent_group
+from taskgroup import etl_tasks
 from airflow.decorators import dag, task, task_group
 from airflow.models.taskinstance import TaskInstance
 from airflow.models.dagrun import DagRun
@@ -18,7 +18,7 @@ envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 
 list_dates = ['2024-04-13', '2024-05-13']   
 
-with DAG('first_dag_16',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
+with DAG('first_dag_17',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	@task
 	def process_dates(params: dict) -> list[str]:
@@ -29,6 +29,6 @@ with DAG('first_dag_16',start_date=datetime(2024,9,23),schedule_interval=None,ca
 		while startDate <= endDate:
 		    dates.append(startDate.strftime('%Y-%m-%d'))
 		    startDate += delta
-		return {"dates":dates} 
+		return dates
 	
-	parent_group(process_dates())
+	etl_tasks.expand(report_date=process_dates())

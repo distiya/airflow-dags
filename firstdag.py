@@ -5,6 +5,7 @@ from airflow.models import Connection
 from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperator
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.hooks.base import BaseHook
+ from airflow.models.param import Param
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
@@ -17,7 +18,7 @@ def _process_user(ti):
 def _process_director(ti):
 	print("Printing user " + test_connection.password)	
 
-with DAG('first_dag_2',start_date=datetime(2024,9,23),schedule_interval='*/1 * * * *',catchup=False) as dag:
+with DAG('first_dag_2',start_date=datetime(2024,9,23),schedule_interval='*/1 * * * *',catchup=False, params={"x":Param("2023-04-11", type="string", format="date")}) as dag:
 
 	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
 	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)

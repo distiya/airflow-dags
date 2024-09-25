@@ -19,7 +19,7 @@ def _process_director(ti):
 	print("Printing Process Director")
 	
 @task_group()
-def parent_group(report_dates: XComArg) -> list[TaskGroup]:
+def parent_group(report_dates) -> list[TaskGroup]:
     dates = []
     for value in report_dates:
             dates.append(value)

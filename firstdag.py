@@ -1,5 +1,5 @@
 from airflow import DAG
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from airflow.operators.python import PythonOperator
 from airflow.models import Connection
 from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperator
@@ -16,10 +16,10 @@ envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 def _process_first(ti):
 	print("Printing Process First")	
 
-with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"x":Param("2023-04-11", type="string", format="date")}) as dag:
+with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param(date.today() - timedelta(days=1), type="string", format="date"),"endDate":Param(date.today(), type="string", format="date")}) as dag:
 
 	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
 	
-	etl = etl_tasks()
+	etl = etl_tasks("{{params.startDate}}")
 	
 	process_first >> etl

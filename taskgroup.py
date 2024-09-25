@@ -10,17 +10,17 @@ from airflow.utils.task_group import TaskGroup
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
 
-envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
-
 def _process_user(ti):
 	print("Printing Process User")
 	
 def _process_director(ti):
 	print("Printing Process Director")	
 	
-def etl_tasks():
+def etl_tasks(testUser):
 
-	with TaskGroup("trading-performance-etl", tooltip="Trading Performance ETL") as group:
+	envVars = {'TEST_USER':testUser,'TEST_PASSWORD':test_connection.password}
+
+	with TaskGroup(f"trading_performance_etl{testUser}", tooltip=f"Trading Performance ETL {testUser}") as group:
 	
 		process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
 		process_director = PythonOperator(task_id='process_director',python_callable=_process_director)

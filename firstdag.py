@@ -25,7 +25,7 @@ with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',c
 	k8s_job = KubernetesPodOperator(
 	    task_id="job-task",
 	    namespace="airflow",
-	    image="distiya/etl-olap:envtest",
+	    image="distiya/etl-olap:envtest1",
 	    name="jobtask",
 	    env_vars = envVars,
 	    get_logs=True

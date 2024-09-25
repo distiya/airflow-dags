@@ -1,12 +1,15 @@
 from airflow import DAG
 from datetime import datetime
 from airflow.operators.python import PythonOperator
+from airflow.models import Connection
+
+test_connection = Connection.get_connection_from_secrets("test-connection")
 
 def _process_user(ti):
-	print("Printing user")
+	print("Printing user " + test_connection.login)
 	
 def _process_director(ti):
-	print("Printing director")	
+	print("Printing user " + test_connection.password)	
 
 with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',catchup=False) as dag:
 

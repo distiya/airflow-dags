@@ -20,6 +20,6 @@ with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,cat
 
 	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
 	
-	etl = etl_tasks("{{params.startDate}}")
+	etl = etl_tasks(dag.params["startDate"])
 	
 	process_first >> etl

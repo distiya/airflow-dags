@@ -9,7 +9,7 @@ from airflow.hooks.base import BaseHook
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
 
-envVars = {'TEST_USER':test_connection.login,'TEST_PASSWORD':test_connection.password}
+envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 
 def _process_user(ti):
 	print("Printing user " + test_connection.login)
@@ -17,7 +17,7 @@ def _process_user(ti):
 def _process_director(ti):
 	print("Printing user " + test_connection.password)	
 
-with DAG('first_dag1',start_date=datetime(2024,9,23),schedule_interval='*/1 * * * *',catchup=False) as dag:
+with DAG('first_dag_2',start_date=datetime(2024,9,23),schedule_interval='*/1 * * * *',catchup=False) as dag:
 
 	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
 	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
@@ -27,7 +27,7 @@ with DAG('first_dag1',start_date=datetime(2024,9,23),schedule_interval='*/1 * * 
 	    namespace="airflow",
 	    image="distiya/etl-olap:envtest1",
 	    name="jobtask",
-	    env_vars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password},
+	    env_vars = envVars,
 	    get_logs=True
 	)
 	

@@ -17,7 +17,7 @@ def _process_user(ti):
 def _process_director(ti):
 	print("Printing user " + test_connection.password)	
 
-with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',catchup=False) as dag:
+with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='*/1 * * * *',catchup=False) as dag:
 
 	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
 	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
@@ -27,7 +27,7 @@ with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',c
 	    namespace="airflow",
 	    image="distiya/etl-olap:envtest1",
 	    name="jobtask",
-	    env_vars = envVars,
+	    env_vars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password},
 	    get_logs=True
 	)
 	

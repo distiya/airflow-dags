@@ -16,10 +16,10 @@ envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 def _process_first(ti):
 	print("Printing Process First")	
 
-with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param(date.today() - timedelta(days=1), type="string", format="date"),"endDate":Param(date.today(), type="string", format="date")}) as dag:
+with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
 	
-	etl = etl_tasks(dag.params["startDate"].strftime('%Y-%m-%d'))
+	etl = etl_tasks(dag.params["startDate"])
 	
 	process_first >> etl

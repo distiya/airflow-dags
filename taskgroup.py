@@ -7,7 +7,7 @@ from airflow.hooks.base import BaseHook
 from airflow.models.param import Param
 from airflow.utils.task_group import TaskGroup
 from airflow.decorators import dag, task, task_group
-from airflow.models import XComArg
+from airflow.models.xcom_arg import XComArg
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")

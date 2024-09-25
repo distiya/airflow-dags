@@ -3,6 +3,7 @@ from datetime import datetime
 from airflow.operators.python import PythonOperator
 from airflow.models import Connection
 from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperator
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 
 test_connection = Connection.get_connection_from_secrets("test-connection")
 
@@ -19,12 +20,13 @@ with DAG('first_dag',start_date=datetime(2024,9,23),schedule_interval='@daily',c
 	process_user = PythonOperator(task_id='process_user',python_callable=_process_user)
 	process_director = PythonOperator(task_id='process_director',python_callable=_process_director)
 	
-	k8s_job = KubernetesJobOperator(
+	k8s_job = KubernetesPodOperator(
 	    task_id="job-task",
 	    namespace="airflow",
 	    image="distiya/etl-olap:envtest",
 	    name="jobtask",
-	    env_vars = envVars
+	    env_vars = envVars,
+	    get_logs=True
 	)
 	
 	process_user >> process_director >> k8s_job

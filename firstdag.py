@@ -27,11 +27,10 @@ def _process_dates(**kwargs):
 	delta = timedelta(days=1)
 	while startDate <= endDate:
 	    dates.append(startDate.strftime('%Y-%m-%d'))
-	    start_dt += delta
-	    
-    	return dates
+	    startDate += delta
+	return dates    
 
-with DAG('first_dag_8',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
+with DAG('first_dag_9',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	process_dates = PythonOperator(task_id='process_first',python_callable=_process_dates,provide_context=True)
 	

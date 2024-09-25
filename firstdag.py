@@ -6,12 +6,14 @@ from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperato
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.hooks.base import BaseHook
 from airflow.models.param import Param
-from taskgroup import etl_tasks
+from taskgroup import parent_group
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
 
 envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
+
+list_dates = ['2024-04-13', '2024-05-13']
 
 def _process_first(ti):
 	print("Printing Process First")	
@@ -20,6 +22,4 @@ with DAG('first_dag_5',start_date=datetime(2024,9,23),schedule_interval=None,cat
 
 	process_first = PythonOperator(task_id='process_first',python_callable=_process_first)
 	
-	etl = etl_tasks(dag.params["startDate"])
-	
-	process_first >> etl
+	process_first >> parent_group(list_dates)

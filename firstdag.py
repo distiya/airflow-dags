@@ -4,8 +4,10 @@ from airflow.operators.python import PythonOperator
 from airflow.models import Connection
 from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperator
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
+from airflow.hooks.base import BaseHook
 
-test_connection = Connection.get_connection_from_secrets("test-connection")
+#test_connection = Connection.get_connection_from_secrets("test-connection")
+test_connection = BaseHook.get_connection("test-connection")
 
 envVars = {'TEST_USER':test_connection.login,'TEST_PASSWORD':test_connection.password}
 

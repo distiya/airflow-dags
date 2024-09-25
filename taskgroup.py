@@ -21,7 +21,7 @@ def _process_director(ti):
 @task_group()
 def parent_group(report_dates) -> list[TaskGroup]:
     dates = []
-    for value in report_dates:
+    for value in report_dates['dates']:
             dates.append(value)
     return list(map(etl_tasks, dates))
 		

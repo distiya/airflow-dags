@@ -18,11 +18,11 @@ def _process_director(ti):
 	print("Printing Process Director")
 	
 @task_group()
-def parent_group(report_dates: List[str]) -> List[TaskGroup]:
+def parent_group(report_dates: list[str]) -> list[TaskGroup]:
     return list(map(etl_tasks, report_dates))
 		
 	
-def etl_tasks(report_date: str) -> List[TaskGroup]:
+def etl_tasks(report_date: str) -> list[TaskGroup]:
 
 	envVars = {'TEST_USER':report_date,'TEST_PASSWORD':test_connection.password}
 

@@ -46,8 +46,6 @@ def etl_tasks(report_date: str):
 	    do_xcom_push=True
 	)
 	
-	process_databricks = PythonOperator(task_id='process_databricks',python_callable=_process_databricks)
-	
 	process_user() >> process_director() >> k8s_job >> process_databricks()
 
 	

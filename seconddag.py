@@ -25,7 +25,7 @@ params = {
 
 
 @dag(
-    dag_id="second_dag_7",
+    dag_id="second_dag_8",
     default_args=default_args,
     schedule_interval=None,  # No schedule for now
     start_date=days_ago(1),

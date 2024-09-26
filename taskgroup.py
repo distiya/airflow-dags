@@ -20,11 +20,10 @@ def _process_director(ti):
 	print("Printing Process Director")
 	
 def _process_databricks(**kwargs):
-	print("Step 0")
 	ti = kwargs['ti']
-	print("Step 1")
 	returnStatus = ti.xcom_pull(task_ids="jobtask", key="return_value")
-	print("Step 2")
+	if returnStatus is None:
+		print("return status is none")
 	#returnStatus = json.loads(return_status_string)	
 	if(returnStatus["status"] == 0):
 		print("Return Status is OK")

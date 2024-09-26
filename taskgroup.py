@@ -20,13 +20,16 @@ def _process_director(ti):
 	print("Printing Process Director")
 	
 def _process_databricks(ti):
-	returnStatus = ti.xcom_pull(task_ids="etl_tasks.job-task", key="return_value")	
+	returnStatus = ti.xcom_pull(task_ids="elt_trading_performance.job-task", key="return_value")	
 	if(returnStatus[0]["status"] == 0):
 		print("Return Status is OK")
 		print(f"Return file is {returnStatus[0]["fileName"]}")
 		
 
-@task_group()	
+@task_group(
+	group_id = "elt_trading_performance",
+	tooltip = "ETL Trading Performance"
+)	
 def etl_tasks(report_date: str):
 
 	envVars = {'TEST_USER':report_date,'TEST_PASSWORD':test_connection.password}

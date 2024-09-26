@@ -8,6 +8,7 @@ from airflow.models.param import Param
 from airflow.utils.task_group import TaskGroup
 from airflow.decorators import dag, task, task_group
 from airflow.models.xcom_arg import XComArg
+import json
 
 #test_connection = Connection.get_connection_from_secrets("test-connection")
 test_connection = BaseHook.get_connection("test-connection")
@@ -17,6 +18,14 @@ def _process_user(ti):
 	
 def _process_director(ti):
 	print("Printing Process Director")
+	
+def _process_databricks(ti):
+	returnStatus = ti.xcom_pull(task_ids="job-task", key="return_value")
+	#returnStatus = json.loads(return_status_string)	
+	if(returnStatus["status"] == 0){
+		print("Return Status is OK")
+		print(f"Return file is {returnStatus["fileName"]}")
+	}
 		
 
 @task_group()	
@@ -37,6 +46,8 @@ def etl_tasks(report_date: str):
 	    do_xcom_push=True
 	)
 	
-	process_user >> process_director >> k8s_job
+	process_databricks = PythonOperator(task_id='process_databricks',python_callable=_process_databricks)
+	
+	process_user >> process_director >> k8s_job >> process_databricks
 
 	

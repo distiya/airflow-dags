@@ -22,7 +22,8 @@ def _process_director(ti):
 def _process_databricks(**kwargs):
 	ti = kwargs['ti']
 	return_string = ti.xcom_pull(task_ids="etl_tasks.job-task", key="return_value")
-	print(f"Pulled XCom from KubernetesPodOperator: {return_string}")
+	returnType = type(return_string)
+	print(f"Pulled XCom from KubernetesPodOperator: {returnType}")
 	returnStatus = json.loads(return_string)	
 	if(returnStatus["status"] == 0):
 		print("Return Status is OK")

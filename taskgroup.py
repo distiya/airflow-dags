@@ -19,8 +19,7 @@ def _process_user(ti):
 def _process_director(ti):
 	print("Printing Process Director")
 	
-def _process_databricks(**kwargs):
-	ti = kwargs['ti']
+def _process_databricks(ti):
 	returnStatus = ti.xcom_pull(task_ids="etl_tasks.job-task", key="return_value")	
 	if(returnStatus[0]["status"] == 0):
 		print("Return Status is OK")
@@ -45,7 +44,7 @@ def etl_tasks(report_date: str):
 	    do_xcom_push=True
 	)
 	
-	process_databricks = PythonOperator(task_id='process_databricks',python_callable=_process_databricks,provide_context=True)
+	process_databricks = PythonOperator(task_id='process_databricks',python_callable=_process_databricks)
 	
 	process_user >> process_director >> k8s_job >> process_databricks
 

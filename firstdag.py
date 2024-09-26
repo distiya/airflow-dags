@@ -18,7 +18,7 @@ envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
 
 list_dates = ['2024-04-13', '2024-05-13']   
 
-with DAG('first_dag_20',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
+with DAG('first_dag_21',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")}) as dag:
 
 	@task
 	def process_dates(params: dict) -> list[str]:

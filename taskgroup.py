@@ -21,7 +21,7 @@ def _process_director(ti):
 	
 def _process_databricks(**kwargs):
 	ti = kwargs['ti']
-	returnStatus = ti.xcom_pull(task_ids="jobtask", key="return_value")
+	returnStatus = ti.xcom_pull(task_ids="etl_tasks.job-task", key="return_value")
 	if returnStatus is None:
 		print("return status is none")
 	#returnStatus = json.loads(return_status_string)	

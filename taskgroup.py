@@ -24,7 +24,7 @@ def _process_databricks(**kwargs):
 	returnStatus = ti.xcom_pull(task_ids="etl_tasks.job-task", key="return_value")	
 	if(returnStatus[0]["status"] == 0):
 		print("Return Status is OK")
-		print(f"Return file is {returnStatus["fileName"]}")
+		print(f"Return file is {returnStatus[0]["fileName"]}")
 		
 
 @task_group()	

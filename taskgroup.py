@@ -42,7 +42,7 @@ def etl_tasks(report_date: str):
 	    task_id="job-task",
 	    namespace="airflow",
 	    image="distiya/etl-olap:envtest3",
-	    name="jobtask",
+	    name="job-task",
 	    env_vars = envVars,
 	    get_logs=True,
 	    do_xcom_push=True

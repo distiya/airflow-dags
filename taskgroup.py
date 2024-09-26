@@ -22,10 +22,9 @@ def _process_director(ti):
 def _process_databricks(ti):
 	returnStatus = ti.xcom_pull(task_ids="job-task", key="return_value")
 	#returnStatus = json.loads(return_status_string)	
-	if(returnStatus["status"] == 0){
+	if(returnStatus["status"] == 0):
 		print("Return Status is OK")
 		print(f"Return file is {returnStatus["fileName"]}")
-	}
 		
 
 @task_group()	

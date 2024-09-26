@@ -25,7 +25,7 @@ params = {
 
 
 @dag(
-    dag_id="second_dag_4",
+    dag_id="second_dag_5",
     default_args=default_args,
     schedule_interval=None,  # No schedule for now
     start_date=days_ago(1),
@@ -33,15 +33,15 @@ params = {
     params = params
 )
 def second_dag():
- 	@task
+	@task
 	def process_dates(params: dict) -> list[str]:
 		startDate = date_object = datetime.strptime(params["startDate"], "%Y-%m-%d").date()
 		endDate = date_object = datetime.strptime(params["endDate"], "%Y-%m-%d").date()
 		dates = []
 		delta = timedelta(days=1)
 		while startDate <= endDate:
-		    dates.append(startDate.strftime('%Y-%m-%d'))
-		    startDate += delta
+			dates.append(startDate.strftime('%Y-%m-%d'))
+			startDate += delta
 		return dates
 	
 	etl_tasks.expand(report_date=process_dates()) 

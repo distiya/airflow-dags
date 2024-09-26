@@ -10,8 +10,8 @@ from airflow.decorators import dag, task, task_group
 from airflow.models.xcom_arg import XComArg
 import json
 
-#test_connection = Connection.get_connection_from_secrets("test-connection")
-test_connection = BaseHook.get_connection("test-connection")
+test_connection = Connection.get_connection_from_secrets("test-connection")
+#test_connection = BaseHook.get_connection("test-connection")
 
 def _process_user(ti):
 	print("Printing Process User")

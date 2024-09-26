@@ -10,20 +10,33 @@ from taskgroup import etl_tasks
 from airflow.decorators import dag, task, task_group
 from airflow.models.taskinstance import TaskInstance
 from airflow.models.dagrun import DagRun
+from airflow.utils.dates import days_ago
 
-#test_connection = Connection.get_connection_from_secrets("test-connection")
-test_connection = BaseHook.get_connection("test-connection")
+default_args = {
+    'owner': 'airflow',
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
-envVars = {'TEST_USER':datetime.now(),'TEST_PASSWORD':test_connection.password}
+params = {
+	"startDate":Param((date.today() - timedelta(days=1)).strftime('%Y-%m-%d'), type="string", format="date"),
+	"endDate":Param(date.today().strftime('%Y-%m-%d'), type="string", format="date")
+}
 
-list_dates = ['2024-04-13', '2024-05-13']   
 
-with DAG('second_dag_1',start_date=datetime(2024,9,23),schedule_interval=None,catchup=False, params={"startDate":Param(date.today() - timedelta(days=1), type="date"),"endDate":Param(date.today(), type="date")}) as dag:
-
-	@task
+@dag(
+    dag_id="second_dag_3"
+    default_args=default_args,
+    schedule_interval=None,  # No schedule for now
+    start_date=days_ago(1),
+    catchup=False,
+    params = params
+)
+def second_dag():
+ 	@task
 	def process_dates(params: dict) -> list[str]:
-		startDate = params["startDate"]
-		endDate = params["endDate"]
+		startDate = date_object = datetime.strptime(params["startDate"], "%Y-%m-%d").date()
+		endDate = date_object = datetime.strptime(params["endDate"], "%Y-%m-%d").date()
 		dates = []
 		delta = timedelta(days=1)
 		while startDate <= endDate:
@@ -31,4 +44,6 @@ with DAG('second_dag_1',start_date=datetime(2024,9,23),schedule_interval=None,ca
 		    startDate += delta
 		return dates
 	
-	etl_tasks.expand(report_date=process_dates())
+	etl_tasks.expand(report_date=process_dates()) 
+
+second_dag()

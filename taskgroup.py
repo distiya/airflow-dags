@@ -1,6 +1,6 @@
 from datetime import datetime
 from airflow.operators.python import PythonOperator
-from airflow.models import Connection
+from airflow.models import Connection, Variable
 from airflow.providers.cncf.kubernetes.operators.job import KubernetesJobOperator
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
 from airflow.hooks.base import BaseHook
@@ -11,6 +11,8 @@ from airflow.models.xcom_arg import XComArg
 import json
 
 test_connection = Connection.get_connection_from_secrets("test-connection")
+
+etl_image = Variable.get("etl_image", default_var="distiya/etl-olap:envtest1")
 		
 
 @task_group(
@@ -39,7 +41,7 @@ def etl_tasks(report_date: str):
 	k8s_job = KubernetesPodOperator(
 	    task_id="job-task",
 	    namespace="airflow",
-	    image="distiya/etl-olap:envtest3",
+	    image=etl_image,
 	    name="job-task",
 	    env_vars = envVars,
 	    get_logs=True,

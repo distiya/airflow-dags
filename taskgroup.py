@@ -30,10 +30,11 @@ def etl_tasks(report_date: str):
 	k8s_job = KubernetesPodOperator(
 	    task_id="job-task",
 	    namespace="airflow",
-	    image="distiya/etl-olap:envtest1",
+	    image="distiya/etl-olap:envtest3",
 	    name="jobtask",
 	    env_vars = envVars,
-	    get_logs=True
+	    get_logs=True,
+	    do_xcom_push=True
 	)
 	
 	process_user >> process_director >> k8s_job
